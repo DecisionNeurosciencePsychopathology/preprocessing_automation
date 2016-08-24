@@ -20,8 +20,8 @@ local_files = glob([local_dir '/' file_regex ]);
 local_ids = regexp(local_files,id_regex, 'match');
 
 %First row should always be the names in the directory
-remote_dir = struct2cell(dir(remote_dir)); 
-remote_ids = regexp(remote_dir(1,:),id_regex, 'match')';
+remote_dirs = struct2cell(dir(remote_dir)); 
+remote_ids = regexp(remote_dirs(1,:),id_regex, 'match')';
 
 %Remove any empty cells
 remote_ids=remote_ids(~cellfun('isempty',remote_ids));  
