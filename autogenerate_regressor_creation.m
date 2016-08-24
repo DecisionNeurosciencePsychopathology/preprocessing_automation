@@ -13,10 +13,11 @@ local_dir = T.local_dir{:};
 remote_dir = T.remote_dir{:};
 file_regex = T.file_regex{:};
 id_regex = T.id_regex;
+subj_regex = T.subject_regex{:};
 %Function names, dirs,..ect
 
 %% File I/O
-local_files = glob([local_dir '/' file_regex ]);
+local_files = glob([local_dir '/*' ]);
 local_ids = regexp(local_files,id_regex, 'match');
 
 %First row should always be the names in the directory
@@ -27,8 +28,9 @@ remote_ids = regexp(remote_dirs(1,:),id_regex, 'match')';
 remote_ids=remote_ids(~cellfun('isempty',remote_ids));  
 local_ids=local_ids(~cellfun('isempty',local_ids)) ;
 
-%Convert to simple cell, if needed
-if iscell(remote_ids{1}) && iscell(local_ids{1})
+%Convert to simple cell, if needed rmved && iscell(local_ids{1})from if
+%statement
+if iscell(remote_ids{1}) 
     remote_ids=[remote_ids{:}]; 
     local_ids=[local_ids{:}];
 end
