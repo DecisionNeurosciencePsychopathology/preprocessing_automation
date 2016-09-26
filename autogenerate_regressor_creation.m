@@ -7,6 +7,13 @@ function autogenerate_regressor_creation(config_file)
 %Since we're writing this in Matlab we might as well make life easy and use
 %a csv.
 
+%% Does VBA toolbox exist and on path?
+A=exist('f_embed','file');
+if A~=2
+    error('VBA toolbox is not on path')  
+end
+
+
 %Read in config file 
 T = readtable(config_file, 'Delimiter', '\t');
 local_dir = T.local_dir{:};
@@ -14,6 +21,9 @@ remote_dir = T.remote_dir{:};
 file_regex = T.file_regex{:};
 id_regex = T.id_regex;
 subj_regex = T.subject_regex{:};
+task_directory = T.task_directory{:};
+reg_output_path = T.reg_out_path{:};
+task_func_name = T.task_func_name{:};
 %Function names, dirs,..ect
 
 %% File I/O
@@ -40,13 +50,19 @@ new_ids = setdiff(remote_ids', local_ids');
 
 %If we have new files move them to the proper directoy
 if ~isempty(new_ids)
-    fprintf('New IDs found!');
+    fprintf('New IDs found! ');
     for i = 1:length(new_ids)
-        fprintf(['Copying subject ' new_ids{i} ' now']);
+        fprintf(['Copying subject ' new_ids{i} ' now\n']);
         copyfile([remote_dir '/' new_ids{i}], [local_dir '/' new_ids{i}]);
     end
 end
-    
+
+cd(task_directory);
+
+%WHICH function to run
+fh=str2func(task_func_name);
+fh();
+
 %TO DO:
 %Add in functions needed to process or organize the fMRI behavioral data,
 %the functions needed to make the regressors, then find a away to transfer
