@@ -40,7 +40,7 @@ local_ids=local_ids(~cellfun('isempty',local_ids)) ;
 
 %Convert to simple cell, if needed rmved && iscell(local_ids{1})from if
 %statement
-if iscell(remote_ids{1}) 
+if iscell(remote_ids) 
     remote_ids=[remote_ids{:}]; 
     local_ids=[local_ids{:}];
 end

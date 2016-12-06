@@ -1,0 +1,2 @@
+local_dir	remote_dir	file_regex	id_regex	subject_regex	task_directory	reg_out_path 	task_func_name
+C:\Users\emtre\OneDrive\Documents\GitHub\clock_rev_scripts\subjects	C:\Users\emtre\Desktop\fake_google_drive\clock_rev	fMRIEmoClockSupplement_*_1_tc	\d{4,6}	\d{4,6}	C:\Users\emtre\OneDrive\Documents\GitHub\explore_clock	C:\Users\emtre\OneDrive\Documents\GitHub\explore_clock\regs	explore_all_sceptic

@@ -1,0 +1,2 @@
+local_dir	remote_dir	file_regex	id_regex	subject_regex	task_directory	reg_out_path 	task_func_name
+C:\Users\emtre\OneDrive\Documents\GitHub\bpd_trust\subjects	C:\Users\emtre\Desktop\fake_google_drive\bpd_trust	trust_*_scan_rs*-*-1.txt	\d{4,6}	\d{4,6}	C:\Users\emtre\OneDrive\Documents\GitHub\bpd_trust	C:\Users\emtre\OneDrive\Documents\GitHub\bpd_trust\regs	bpd_trust_fit_group_vba
