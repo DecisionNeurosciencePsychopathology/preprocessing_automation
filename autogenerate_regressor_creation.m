@@ -10,11 +10,23 @@ function autogenerate_regressor_creation(config_file)
 %% Does VBA toolbox exist and on path?
 A=exist('f_embed','file');
 if A~=2
-    error('VBA toolbox is not on path')  
+    error('VBA toolbox is not on path see help for instructions')  
 end
 
+%% Add current directory to path
+addpath(pwd);
 
-%Read in config file 
+%% check to see if nessecary functions are on path
+needed_fxs = {'errorlog','moveregs'};
+for needed_fx = needed_fxs
+    if exist(needed_fx{:},'file')~=2
+        fprintf('\n%s DOES NOT EXIST SEE HELP FOR INSTRUCTIONS\n',upper(needed_fx{:}))
+        fprintf('exiting...\n')
+        return
+    end
+end
+
+%% Read in config file 
 T = readtable(config_file, 'Delimiter', '\t');
 local_dir = T.local_dir{:};
 remote_dir = T.remote_dir{:};
