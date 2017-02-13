@@ -1,2 +1,0 @@
-local_dir	remote_dir	file_regex	id_regex	subject_regex	task_directory	reg_out_path	task_func_name
-C:\kod\dom_conCog\subjects	E:\Users\wilsonj3\Google Drive\skinner\data_\eprime\shark	_*_*_onsets	\d{4,6}	\d{4,6}	C:\kod\dom_conCog	C:\kod\regs	makesharkregs
