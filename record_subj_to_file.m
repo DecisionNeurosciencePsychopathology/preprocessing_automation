@@ -15,22 +15,23 @@ function record_subj_to_file(id,task_data)
 
 %If master data file doesn't exist create it
 data_dir=fileparts(which('autogenerate_regressor_creation'));
-if ~exist([data_dir '/master_arc_data.m'],'file')
+if ~exist([data_dir '/master_arc_data.mat'],'file')
     T=create_master_arc_data_file(data_dir);
 else
-    T=load([data_dir '/master_arc_data.m']);
+    load([data_dir '/master_arc_data.mat']);
 end
 
 %If new subject put them in the data table
 if ~ismember(id, T.ID)
-    T.ID(length(T.ID)+1)=id;
+    T.ID(length(T.ID)+1,1)=id;
 end
 
 %Get subject's row index
-id_idx = ismember(id, T.ID);
+id_idx = find(ismember(T.ID,id));
 
 
-%update the task tracking data --is there a way to loop it?
+%update the task tracking data --is there a way to condense it?
+%T.([task_data.name '_behave_completed'])(idx) = blah <- this works!
 switch task_data.name
     case 'Bandit'
         T.Bandit_behave_completed(id_idx)=task_data.behave_completed;
@@ -55,6 +56,9 @@ switch task_data.name
     otherwise
         return
 end
+
+%Update the master data table
+save([data_dir '/master_arc_data.mat'],'T')
 
 %write table data to file
 writetable(T,[data_dir '/arc_data.dat'],'Delimiter','\t')
