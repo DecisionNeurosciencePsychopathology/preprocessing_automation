@@ -14,3 +14,4 @@ task_data.name=task_name;
 task_data.behave_completed=0;
 task_data.behave_processed=0;
 task_data.fMRI_processed=0;
+task_data.fMRI_usable=0;

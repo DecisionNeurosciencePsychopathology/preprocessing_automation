@@ -104,6 +104,8 @@ cd(task_directory);
 fh=str2func(task_func_name);
 fh();
 
+%% Quality check fMRI single subject maps
+
 %cd back to original directory -- not sure how needed this would be if I
 %provided full paths, but keep it for now.
 cd(current_dir)
@@ -131,8 +133,9 @@ if ~isempty(new_ids) || params.force_qc
     
 end
 
+%% Compile all data into exportable format
 %TODO
 %run data compiler script
-
+%compile_usable_scan_database(tasks)
 
 

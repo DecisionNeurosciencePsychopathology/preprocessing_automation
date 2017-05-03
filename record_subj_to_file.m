@@ -1,17 +1,9 @@
 function record_subj_to_file(id,task_data)
-
 %% write completed subj data to file
-%Note: Let's try to clean this code up into a function, well
-%have a better idea once we know the final format of dat or
-%xlsx file we'll use, but we should still contain it in a
-%function to follow the DRY principle!
-
-%2/13/2017 I think it would actually be easier just to have all
-%the data present in one .dat file. Store everything in a table
-%structure that can be modified then just update the .dat after
-%each task is ran through the pipeline.
-
+%Write task tracking data to main ARC data file.
+%
 %Note any new fields added here need to be reflected in initialize_task_tracking_data.m!!!
+%
 
 %If master data file doesn't exist create it
 data_dir=fileparts(which('autogenerate_regressor_creation'));
@@ -19,6 +11,24 @@ if ~exist([data_dir '/master_arc_data.mat'],'file')
     T=create_master_arc_data_file(data_dir);
 else
     load([data_dir '/master_arc_data.mat']);
+end
+
+%Load in processed lists (proc_id_lists)
+load([data_dir '/proc_id_lists.mat'])
+
+%Determine if subject was processed or not
+if ismember(id,proc_id_lists.(task_data.name))
+    task_data.fMRI_processed=1;
+else
+    task_data.fMRI_processed=0;
+end
+
+%Determine if subject is uasable or not
+%BUG ALERT: Currently cannot handle 0's as first digit, code truncates them
+usable_list=readtable([data_dir sprintf('/scan_qc_tracking/%s_log.dat',task_data.name)]);
+if ismember(id,usable_list.id)
+    tmp_idx= ismember(usable_list.id,id);
+    task_data.fMRI_usable=usable_list.valid_bin(tmp_idx);
 end
 
 %If new subject put them in the data table
@@ -29,33 +39,11 @@ end
 %Get subject's row index
 id_idx = find(ismember(T.ID,id));
 
-
-%update the task tracking data --is there a way to condense it?
-%T.([task_data.name '_behave_completed'])(idx) = blah <- this works!
-switch task_data.name
-    case 'Bandit'
-        T.Bandit_behave_completed(id_idx)=task_data.behave_completed;
-        T.Bandit_behave_processed(id_idx)=task_data.behave_processed;
-        T.Bandit_fMRI_processed(id_idx)=task_data.fMRI_processed;
-    case 'BPD_Trust'
-        T.BPD_Trust_behave_completed(id_idx)=task_data.behave_completed;
-        T.BPD_Trust_behave_processed(id_idx)=task_data.behave_processed;
-        T.BPD_Trust_fMRI_processed(id_idx)=task_data.fMRI_processed;
-    case 'BPD_Clock'
-        T.BPD_Clock_behave_completed(id_idx)=task_data.behave_completed;
-        T.BPD_Clock_behave_processed(id_idx)=task_data.behave_processed;
-        T.BPD_Clock_fMRI_processed(id_idx)=task_data.fMRI_processed;
-    case 'Shark'
-        T.Shark_behave_completed(id_idx)=task_data.behave_completed;
-        T.Shark_behave_processed(id_idx)=task_data.behave_processed;
-        T.Shark_fMRI_processed(id_idx)=task_data.fMRI_processed;
-    case 'Rev_Clock'
-        T.Rev_Clock_behave_completed(id_idx)=task_data.behave_completed;
-        T.Rev_Clock_behave_processed(id_idx)=task_data.behave_processed;
-        T.Rev_Clock_fMRI_processed(id_idx)=task_data.fMRI_processed;
-    otherwise
-        return
-end
+%update the task tracking data
+T.([task_data.name '_behave_completed'])(id_idx)=task_data.behave_completed;
+T.([task_data.name '_behave_processed'])(id_idx)=task_data.behave_processed;
+T.([task_data.name '_fMRI_processed'])(id_idx)=task_data.fMRI_processed;
+T.([task_data.name '_fMRI_usable'])(id_idx)=task_data.fMRI_usable;
 
 %Update the master data table
 save([data_dir '/master_arc_data.mat'],'T')
@@ -63,15 +51,19 @@ save([data_dir '/master_arc_data.mat'],'T')
 %write table data to file
 writetable(T,[data_dir '/arc_data.dat'],'Delimiter','\t')
 
+
+%% Sub functions %%
+
+%Initialize the master data file
 function T=create_master_arc_data_file(data_dir)
-task_names={'Bandit','Trust','BPD_Trust','BPD_Clock'...
-    'Rev_Clock','Shark'};
+task_names={'bandit','trust','trust_bpd','clockbpd'...
+    'clockrev','shark'};
 col_names={'ID'};
 for i = 1:length(task_names)
     col_names{length(col_names)+1} = [task_names{i} '_behave_completed'];
     col_names{length(col_names)+1} = [task_names{i} '_behave_processed'];
     col_names{length(col_names)+1} = [task_names{i} '_fMRI_processed'];
+    col_names{length(col_names)+1} = [task_names{i} '_fMRI_usable'];
 end
 T = array2table(nan(0,length(col_names)),'VariableNames',col_names);
 save([data_dir '/master_arc_data.mat'],'T')
-

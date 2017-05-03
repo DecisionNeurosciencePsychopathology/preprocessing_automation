@@ -50,7 +50,7 @@ for file = files
     clearvars filename delimiter formatSpec fileID dataArray ans;
     
     %Fill in struct
-    task_name=regexp(file,'(ban|clo|trust|trust_bpd|shark)[^_]*','match');
+    task_name=regexp(file,'(trust_bpd)|((ban|clo|trust|shark)[^_]*)','match');
     task_name = task_name{:}; %How can I get arround this?
     proc_id_lists.(task_name{:}) = ids; 
 end
