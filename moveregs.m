@@ -11,8 +11,14 @@ end
 
 %Get paths
 scriptName = mfilename('fullpath');
-[currentpath, filename, fileextension]= fileparts(scriptName);
+[currentpath, filename, ~]= fileparts(scriptName);
 
+%Hotfix for trust issue, let's clean this up later
+if ~isempty(strfind(newfolder,'trust_analyses'))
+    filename = 'moveregs_learn_trust';
+end
+
+%Take care of file seperators
 if ispc
     currentpath=strrep(currentpath,'\','/');
     currfolder=strrep(currfolder,'\','/');

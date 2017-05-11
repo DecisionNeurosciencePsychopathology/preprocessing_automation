@@ -25,11 +25,12 @@ end
 
 %Determine if subject is uasable or not
 %BUG ALERT: Currently cannot handle 0's as first digit, code truncates them
-usable_list=readtable([data_dir sprintf('/scan_qc_tracking/%s_log.dat',task_data.name)]);
-if ismember(id,usable_list.id)
-    tmp_idx= ismember(usable_list.id,id);
-    task_data.fMRI_usable=usable_list.valid_bin(tmp_idx);
-end
+%THIS is no longer needed as the update taskes place after the  QC file sync...
+% usable_list=readtable([data_dir sprintf('/scan_qc_tracking/%s_log.dat',task_data.name)]);
+% if ismember(id,usable_list.id)
+%     tmp_idx= ismember(usable_list.id,id);
+%     task_data.fMRI_usable=usable_list.valid_bin(tmp_idx);
+% end
 
 %If new subject put them in the data table
 if ~ismember(id, T.ID)
@@ -43,7 +44,7 @@ id_idx = find(ismember(T.ID,id));
 T.([task_data.name '_behave_completed'])(id_idx)=task_data.behave_completed;
 T.([task_data.name '_behave_processed'])(id_idx)=task_data.behave_processed;
 T.([task_data.name '_fMRI_processed'])(id_idx)=task_data.fMRI_processed;
-T.([task_data.name '_fMRI_usable'])(id_idx)=task_data.fMRI_usable;
+%T.([task_data.name '_fMRI_usable'])(id_idx)=task_data.fMRI_usable; %THIS is no longer needed as the update taskes place after the  QC file sync...
 
 %Update the master data table
 save([data_dir '/master_arc_data.mat'],'T')

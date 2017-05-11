@@ -3,17 +3,19 @@ function compile_usable_scan_database(tasks)
 %Function will update (or create) all demographic and quality control
 %information pertaining to DNPL's fMRI scanning protocols.
 %input must be a cell! account for this later
+%EX call: compile_usable_scan_database({'trust'})
 
 %% Optional input arg
-%Compile all data instead of jsut indiviual tasks
+%Compile all data instead of just indiviual tasks
+all_tasks = {'bandit', 'trust', 'trust_bpd', 'clockbpd', 'shark', 'clockrev'};
 if strcmp(tasks{:},'all')
-    tasks = {'bandit', 'trust', 'trust_bpd', 'clockbpd', 'shark', 'clockrev'};
+    tasks = all_tasks;
 end
 
 
 %% Master excel sheet creation
 %Set sheets for indexing
-sheets={'bandit','trust','trust_bpd','clockbpd','clockrev','shark'};
+sheets=all_tasks;
 
 %look for file
 if ~exist('dnpl_usable_scans.xls','file')
@@ -96,7 +98,17 @@ for task = tasks
     %% Write sheet to work book
     sheet_num=find(cellfun(@(IDX) ~isempty(IDX), regexp(sheets,expresssion)));
     writetable(sheet_data,'dnpl_usable_scans.xls','Sheet',sheet_num)
+    
+    %% Create historgram of ages if needed
+%     stop=1;
+%     task_col_idx=find(cellfun(@(IDX) ~isempty(IDX), regexp(task_data_cols,expresssion)));
+%     
 end
+
+%Move the final file to wherever the RA's want it to be
+mkdir('L:/Summary Notes/Scanning Database/task_data/')
+copyfile('dnpl_usable_scans.xls','L:/Summary Notes/Scanning Database/task_data/dnpl_usable_scans.xls')
+
 
 function data=import_demographics
 %Snippet will export the ALL_DEMOS table to a local folder in the Y: drive

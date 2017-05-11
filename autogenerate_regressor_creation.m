@@ -15,7 +15,7 @@ function autogenerate_regressor_creation(config_file, varargin)
 %
 %Syntax
 %autogenerate_regressor_creation('bpd_clock.dat')
-%autogenerate_regressor_creation('bpd_clock.dat', 'force_qc', 1)
+%autogenerate_regressor_creation('bpd_clock.dat', 'force_qc', 0)
 
 %% Parser
 %Set up parser
@@ -131,11 +131,13 @@ if ~isempty(new_ids) || params.force_qc
     %TODO
     %Ask nate about from thorndike to UPMC connections or if firewall blocks it
     
+    %Perhaps update fMRI usable here instead of in record subj to file
+    update_fMRI_usable(thorndike_task_name)
+    
 end
 
 %% Compile all data into exportable format
-%TODO
 %run data compiler script
-%compile_usable_scan_database(tasks)
+compile_usable_scan_database({thorndike_task_name})
 
 
