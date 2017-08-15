@@ -14,13 +14,11 @@ end
 
 
 %% Master excel sheet creation
-%Set sheets for indexing
-sheets=all_tasks;
-
 %look for file
 if ~exist('dnpl_usable_scans.xls','file')
     %     %if it doesn't exist, create it
-        headers={'ID'}; %Just need dummy placement variables
+    headers={'ID'}; %Just need dummy placement variables
+    sheets = all_tasks;
     
     for i=1:length(sheets)
         xlswrite('dnpl_usable_scans',headers,i)
@@ -36,6 +34,9 @@ if ~exist('dnpl_usable_scans.xls','file')
     ewb.Close(false) %Close out file
     ex_file.Quit
 end
+
+%Set sheets for indexing
+[~,sheet_names]=xlsfinfo([ pwd '/dnpl_usable_scans.xls']);
 
 
 %% Upload info for each id from master_arc_data
@@ -96,7 +97,7 @@ for task = tasks
     sheet_data = join(sheet_data,subj_demos,'Keys','ID');
     
     %% Write sheet to work book
-    sheet_num=find(cellfun(@(IDX) ~isempty(IDX), regexp(sheets,expresssion)));
+    sheet_num=find(cellfun(@(IDX) ~isempty(IDX), regexp(sheet_names,expresssion)));
     writetable(sheet_data,'dnpl_usable_scans.xls','Sheet',sheet_num)
     
     %% Create historgram of ages if needed
@@ -128,9 +129,10 @@ delete(h);
 data = readtable('Y:/demos_stash/ALL_SUBJECS_DEMO.xlsx');
 
 %Remove duplicates if any
-[n, bin] = histc(data.ID, unique(data.ID));
-multiple = find(n > 1);
-index = ismember(bin, multiple);
+% [n, edges,bin] = histcounts(data.ID, unique(data.ID));
+% multiple = find(n > 1);
+% index = ismember(bin, multiple);
+index=diff(data.ID)==0; %Go with this for now, histc and histcounts was causing issues...
 data(index,:)=[];
 
 
