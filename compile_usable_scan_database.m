@@ -89,12 +89,36 @@ for task = tasks
     
     %% Process scan db
     scan_db.Properties.VariableNames(1) = {'ID'};
+    
+    %For those who have no data i.e. might only have stucs, we need to add
+    %them into the overview sheet for consented purposes. No need to track
+    %them before this step right?
+    varNames = sheet_data.Properties.VariableNames;
+    no_data_subjects_id = scan_db.ID(~ismember(scan_db.ID,sheet_data.ID));
+    no_data_subjects_dummy_data = cell2table(num2cell([no_data_subjects_id zeros(length(no_data_subjects_id),length(varNames)-1)]), 'VariableNames',varNames);
+    sheet_data = [sheet_data; no_data_subjects_dummy_data]; %#ok<AGROW>
+    
+    %Join (i.e. add cols) to sheet data
     sheet_data = join(sheet_data,scan_db,'Keys','ID');
     %TODO
     %Clean up un-needed variables from scan db
     
     %% Process demographics
-    sheet_data = join(sheet_data,subj_demos,'Keys','ID');
+    %If the id's are to new and are not in the demo database
+    try
+        sheet_data = join(sheet_data,subj_demos,'Keys','ID');
+    catch
+        %TODO
+        %Log the mssing people
+        warning('Missing subjects!')
+        sheet_data.ID(missing_idx);
+        
+        %Remove and proceed
+        missing_idx= ~ismember(sheet_data.ID,subj_demos.ID);
+        sheet_data(missing_idx,:)=[];
+        sheet_data = join(sheet_data,subj_demos,'Keys','ID');
+    end
+        
     
     %% Write sheet to work book
     sheet_num=find(cellfun(@(IDX) ~isempty(IDX), regexp(sheet_names,expresssion)));
