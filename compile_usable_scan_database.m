@@ -111,10 +111,10 @@ for task = tasks
         %TODO
         %Log the mssing people
         warning('Missing subjects!')
-        sheet_data.ID(missing_idx);
+        %sheet_data.ID(missing_idx);
         
         %Remove and proceed
-        missing_idx= ~ismember(sheet_data.ID,subj_demos.ID);
+        missing_idx = ~ismember(sheet_data.ID,subj_demos.ID);
         sheet_data(missing_idx,:)=[];
         sheet_data = join(sheet_data,subj_demos,'Keys','ID');
     end
@@ -131,8 +131,9 @@ for task = tasks
 end
 
 %Move the final file to wherever the RA's want it to be
-mkdir('L:/Summary Notes/Scanning Database/task_data/')
-copyfile('dnpl_usable_scans.xls','L:/Summary Notes/Scanning Database/task_data/dnpl_usable_scans.xls')
+mkdir('E:/Box Sync/skinner/scanning/Scanner_Database/task_data/')
+copyfile('dnpl_usable_scans.xls','E:/Box Sync/skinner/scanning/Scanner_Database/task_data/dnpl_usable_scans.xls')
+
 
 
 function data=import_demographics
@@ -169,13 +170,15 @@ h=actxserver('Access.Application');
 hardcopy = 'L:\Summary Notes\Scanning Database\DNPL Scanning Database'; %File name
 invoke(h,'OpenCurrentDatabase',hardcopy);
 h.Visible = 0; %Make it invisible
+%TODO
+%Change the macro in the database
 invoke(h.DoCmd,'RunMacro','export_all_scan_forms'); %Run macro
 %% Garbage collection
 h.Quit;
 delete(h);
 %% Output
 %Compile all the forms under one data struct
-data_dir = 'L:/Summary Notes/Scanning Database/form_export/';
+data_dir = 'E:/Box Sync/skinner/scanning/Scanner_Database/form_export/';
 files = dir([data_dir '*.xlsx'])';
 
 %Initialize struct

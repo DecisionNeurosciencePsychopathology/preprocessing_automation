@@ -46,6 +46,9 @@ T.([task_data.name '_behave_processed'])(id_idx)=task_data.behave_processed;
 T.([task_data.name '_fMRI_processed'])(id_idx)=task_data.fMRI_processed;
 %T.([task_data.name '_fMRI_usable'])(id_idx)=task_data.fMRI_usable; %THIS is no longer needed as the update taskes place after the  QC file sync...
 
+%TODO
+%Remove the nans that creep in for some reason...
+
 %Update the master data table
 save([data_dir '/master_arc_data.mat'],'T')
 
