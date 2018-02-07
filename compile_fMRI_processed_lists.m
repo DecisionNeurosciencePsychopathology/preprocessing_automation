@@ -58,5 +58,10 @@ end
 %Save the data struct
 save proc_id_lists proc_id_lists
 
+%TODO create a log stating this ran
+% diary('scan_qc_tracking/compile_processed_log.txt');
+% fprintf('compile_fMRI_processed_lists ran successfully on %s\n',datetime)
+% diary off
+
 fprintf('\nComplete!\n')
     

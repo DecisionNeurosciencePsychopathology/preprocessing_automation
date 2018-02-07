@@ -130,6 +130,10 @@ for task = tasks
 %     
 end
 
+%Until I can get solo access to the scanning database to change the macros
+%use this work around
+copyfile('L:/Summary Notes/Scanning Database/form_export/*', 'E:/Box Sync/skinner\scanning/Scanner_Database/form_export/')
+
 %Move the final file to wherever the RA's want it to be
 mkdir('E:/Box Sync/skinner/scanning/Scanner_Database/task_data/')
 copyfile('dnpl_usable_scans.xls','E:/Box Sync/skinner/scanning/Scanner_Database/task_data/dnpl_usable_scans.xls')
