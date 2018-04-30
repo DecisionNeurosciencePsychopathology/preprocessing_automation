@@ -4,7 +4,12 @@ function update_fMRI_usable(task_name)
 %8/15/17: Added in the manually checked excel file for questionable subjects
 
 %Get usable list
-usable_list=readtable([pwd sprintf('/scan_qc_tracking/%s_log.dat',task_name)]);
+try
+    usable_list=readtable([pwd sprintf('/scan_qc_tracking/%s_log.dat',task_name)]);
+catch
+    warning('No log file detected in scan_qc_tracking! usable list for %s will be inaccurate!',task_name)
+    return
+end
 
 %Load in task data
 try

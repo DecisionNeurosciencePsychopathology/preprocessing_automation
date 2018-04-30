@@ -7,6 +7,9 @@ function task_data=initialize_task_tracking_data(task_name)
 %BPD_Clock
 %Rev_Clock
 %Shark
+%Spott
+%K_Trust
+%K_Clock
 
 
 %Initialize task tracking data

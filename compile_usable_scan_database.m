@@ -7,7 +7,7 @@ function compile_usable_scan_database(tasks)
 
 %% Optional input arg
 %Compile all data instead of just indiviual tasks
-all_tasks = {'bandit', 'trust', 'trust_bpd', 'clockbpd', 'shark', 'clockrev'};
+all_tasks = {'bandit', 'trust', 'trust_bpd', 'clockbpd', 'shark', 'clockrev', 'spott', 'ksoc_trust', 'ksoc_clock'};
 if strcmp(tasks{:},'all')
     tasks = all_tasks;
 end
@@ -54,16 +54,22 @@ subj_demos = import_demographics;
 %% Import scanning DB
 scan_dbs = import_scan_db;
 
+%Until I can get solo access to the scanning database to change the macros
+%use this work around
+copyfile('L:/Summary Notes/Scanning Database/form_export/*', 'E:/Box Sync/skinner\scanning/Scanner_Database/form_export/')
+
 %% Begin compiling
 for task = tasks
     
     %Choose which scanner db to use -- make this a function?
     if strcmp(task,'bandit') || strcmp(task,'trust')
         scan_db = scan_dbs.learn;
-    elseif strcmp(task,'clockbpd') || strcmp(task,'trust_bpd')
+    elseif strcmp(task,'clockbpd') || strcmp(task,'trust_bpd') || strcmp(task,'spott')
         scan_db = scan_dbs.bsocial;
     elseif strcmp(task,'clockrev') || strcmp(task,'shark')
         scan_db = scan_dbs.explore;
+    elseif strcmp(task,'ksoc_trust') || strcmp(task,'ksoc_clock')
+        scan_db = scan_dbs.ksocial;
     else
         error('Not any task I''ve ever heard of...exiting')
     end
@@ -76,7 +82,7 @@ for task = tasks
     
     %To differentiate between trust and trust_bpd
     if strcmp(task,'trust')
-        expresssion = 'trust(?!_bpd)';
+        expresssion = '^trust(?!_bpd)';
     else
         expresssion = [task{:} '.*'];
     end
@@ -129,10 +135,6 @@ for task = tasks
 %     task_col_idx=find(cellfun(@(IDX) ~isempty(IDX), regexp(task_data_cols,expresssion)));
 %     
 end
-
-%Until I can get solo access to the scanning database to change the macros
-%use this work around
-copyfile('L:/Summary Notes/Scanning Database/form_export/*', 'E:/Box Sync/skinner\scanning/Scanner_Database/form_export/')
 
 %Move the final file to wherever the RA's want it to be
 mkdir('E:/Box Sync/skinner/scanning/Scanner_Database/task_data/')

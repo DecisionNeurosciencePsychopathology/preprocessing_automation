@@ -17,9 +17,11 @@ end
 load([data_dir '/proc_id_lists.mat'])
 
 %Determine if subject was processed or not
-if ismember(id,proc_id_lists.(task_data.name))
-    task_data.fMRI_processed=1;
-else
+try
+    if ismember(id,proc_id_lists.(task_data.name))
+        task_data.fMRI_processed=1;
+    end
+catch
     task_data.fMRI_processed=0;
 end
 
@@ -39,6 +41,18 @@ end
 
 %Get subject's row index
 id_idx = find(ismember(T.ID,id));
+
+%If the variable name doesn't exit for some reason initialize it
+variables=T.Properties.VariableNames;
+%regexp(variables,task_data.name);
+present = any(~cellfun(@isempty, regexp(variables,task_data.name)));
+
+if ~present
+    T.([task_data.name '_behave_completed'])=zeros(height(T),1);
+    T.([task_data.name '_behave_processed'])=zeros(height(T),1);
+    T.([task_data.name '_fMRI_processed'])=zeros(height(T),1);
+    T.([task_data.name '_fMRI_usable'])=zeros(height(T),1);
+end
 
 %update the task tracking data
 T.([task_data.name '_behave_completed'])(id_idx)=task_data.behave_completed;
@@ -61,7 +75,7 @@ writetable(T,[data_dir '/arc_data.dat'],'Delimiter','\t')
 %Initialize the master data file
 function T=create_master_arc_data_file(data_dir)
 task_names={'bandit','trust','trust_bpd','clockbpd'...
-    'clockrev','shark'};
+    'clockrev','shark','spott','ksoc_trust','ksoc_clock'};
 col_names={'ID'};
 for i = 1:length(task_names)
     col_names{length(col_names)+1} = [task_names{i} '_behave_completed'];
